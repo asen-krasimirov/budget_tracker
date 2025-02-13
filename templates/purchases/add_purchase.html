@@ -1,0 +1,12 @@
+{% extends '../base.html' %}
+
+{% block content %}
+<h2>Add Purchase</h2>
+<p>Scanned Barcode: <strong>{{ barcode }}</strong></p>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Purchase</button>
+</form>
+{% endblock %}

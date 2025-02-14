@@ -20,6 +20,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+AUTH_USER_MODEL = "accounts.CustomUser"  # ✅ Use the new user model
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # ✅ Use SMTP
+EMAIL_HOST = "smtp.gmail.com"  # ✅ Replace with your mail provider
+EMAIL_PORT = os.getenv("EMAIL_PORT") or 587
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") or True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") or "personalgrowth57@gmail.com"  # ✅ Your email
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD") or "epqq dtpn cvpx ljap" # ✅ Use app-specific password or .env
+
+print("VARIABLES:    !!!")
+print(EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 

@@ -82,9 +82,22 @@ def add_purchase(request, barcode):
 
 @login_required
 def dashboard(request):
-    """Shows only purchases of the logged-in user."""
-    purchases = Purchase.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'purchases/dashboard.html', {'purchases': purchases})
+    """Displays purchases with sorting options."""
+    sort_by = request.GET.get("sort", "date_desc")  # ✅ Default sorting: Newest first
+
+    purchases = Purchase.objects.filter(user=request.user)
+
+    # ✅ Sorting logic
+    if sort_by == "date_asc":
+        purchases = purchases.order_by("date")  # Oldest first
+    elif sort_by == "date_desc":
+        purchases = purchases.order_by("-date")  # Newest first
+    elif sort_by == "price_asc":
+        purchases = purchases.order_by("price")  # Lowest price first
+    elif sort_by == "price_desc":
+        purchases = purchases.order_by("-price")  # Highest price first
+
+    return render(request, "purchases/dashboard.html", {"purchases": purchases, "sort_by": sort_by})
 
 @login_required
 def export_purchases_csv(request):

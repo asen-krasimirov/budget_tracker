@@ -1,21 +1,47 @@
 {% extends '../base.html' %}
 
 {% block content %}
-<h2>Your Purchases</h2>
-<table>
-    <tr>
-        <th>Product</th>
-        <th>Price</th>
-        <th>Date</th>
-    </tr>
-    {% for purchase in purchases %}
-    <tr>
-        <td>{{ purchase.name }}</td>
-        <td>${{ purchase.price }}</td>
-        <td>{{ purchase.date }}</td>
-    </tr>
-    {% endfor %}
+<h2>Purchase History</h2>
+
+<!-- Sorting Dropdown -->
+<form method="GET" id="sort-form">
+    <label for="sort">Sort by:</label>
+    <select name="sort" id="sort" onchange="document.getElementById('sort-form').submit();">
+        <option value="date_desc" {% if sort_by == "date_desc" %}selected{% endif %}>Date (Newest First)</option>
+        <option value="date_asc" {% if sort_by == "date_asc" %}selected{% endif %}>Date (Oldest First)</option>
+        <option value="price_desc" {% if sort_by == "price_desc" %}selected{% endif %}>Price (Highest First)</option>
+        <option value="price_asc" {% if sort_by == "price_asc" %}selected{% endif %}>Price (Lowest First)</option>
+    </select>
+</form>
+
+<!-- Purchases Table -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Barcode</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for purchase in purchases %}
+        <tr>
+            <td>{{ purchase.date }}</td>
+            <td>{{ purchase.name }}</td>
+            <td>{{ purchase.price }}</td>
+            <td>{{ purchase.category }}</td>
+            <td>{{ purchase.barcode }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No purchases found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
+
 <a href="{% url 'upload_barcode' %}">Add New Purchase</a>
 <a href="{% url 'export_purchases_csv' %}" class="btn btn-primary">📥 Export as CSV</a>
 {% endblock %}

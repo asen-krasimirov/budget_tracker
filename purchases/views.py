@@ -8,6 +8,9 @@ from .forms import ImageUploadForm
 import base64
 from django.core.files.base import ContentFile
 
+from django.http import HttpResponse
+
+import csv
 
 @login_required
 def upload_barcode(request):
@@ -82,3 +85,20 @@ def dashboard(request):
     """Shows only purchases of the logged-in user."""
     purchases = Purchase.objects.filter(user=request.user).order_by('-date')
     return render(request, 'purchases/dashboard.html', {'purchases': purchases})
+
+@login_required
+def export_purchases_csv(request):
+    """Exports user's purchase data as a CSV file."""
+    purchases = Purchase.objects.filter(user=request.user)  # ✅ Fetch only the logged-in user's purchases
+
+    # Create a CSV response
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="purchases.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["Date", "Product Name", "Price", "Category", "Barcode"])  # ✅ CSV Header
+
+    for purchase in purchases:
+        writer.writerow([purchase.date, purchase.name, purchase.price, purchase.category, purchase.barcode])  # ✅ Add data rows
+
+    return response

@@ -17,4 +17,5 @@
     {% endfor %}
 </table>
 <a href="{% url 'upload_barcode' %}">Add New Purchase</a>
+<a href="{% url 'export_purchases_csv' %}" class="btn btn-primary">📥 Export as CSV</a>
 {% endblock %}

@@ -26,7 +26,13 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 AUTH_USER_MODEL = "accounts.CustomUser"  # ✅ Use the new user model
 
+DEBUG = True
+
+# if DEBUG:
+#     EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+# else:
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # ✅ Use SMTP
+
 EMAIL_HOST = "smtp.gmail.com"  # ✅ Replace with your mail provider
 EMAIL_PORT = os.getenv("EMAIL_PORT") or 587
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") or True
@@ -43,7 +49,6 @@ print(EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
 SECRET_KEY = 'django-insecure-j*k@j)on)uch+obb)(s4d3&g0*1q58@t&$6i7^pfqg81$a(^te'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 

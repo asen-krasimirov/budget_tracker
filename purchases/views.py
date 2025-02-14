@@ -11,11 +11,12 @@ from django.core.files.base import ContentFile
 
 @login_required
 def upload_barcode(request):
-    """Handles barcode image upload OR webcam capture."""
+    """Handles barcode image upload, webcam capture, or manual entry."""
     form = ImageUploadForm(request.POST or None, request.FILES or None)
 
     if request.method == "POST":
         image_path = None  # Default to no image
+        barcode = None  # Default to no barcode
 
         if "image" in request.FILES:  # ✅ If user uploaded an image
             image_path = save_temp_image(request.FILES["image"])
@@ -23,24 +24,26 @@ def upload_barcode(request):
         elif request.POST.get("captured_image"):  # ✅ If user captured an image
             try:
                 format, imgstr = request.POST["captured_image"].split(";base64,")
-                ext = format.split("/")[-1]  # Extract extension (png/jpg)
-
+                ext = format.split("/")[-1]
                 image_data = ContentFile(base64.b64decode(imgstr), name=f"captured_image.{ext}")
-                image_path = save_temp_image(image_data)  # Save base64 image
-
+                image_path = save_temp_image(image_data)
             except Exception as e:
                 form.add_error(None, "Invalid captured image format.")
                 return render(request, "purchases/upload_barcode.html", {"form": form})
 
-        if image_path:  # ✅ Only process if an image is provided
+        elif request.POST.get("manual_barcode"):  # ✅ If user entered a barcode manually
+            barcode = request.POST.get("manual_barcode").strip()
+            return redirect("add_purchase", barcode=barcode)  # ✅ Redirect directly
+
+        if image_path:  # ✅ Process only if an image exists
             barcode = scan_barcode(image_path)
-            delete_temp_image(image_path)  # Remove temp image
+            delete_temp_image(image_path)
 
             if barcode:
                 barcode = barcode.decode("utf-8") if isinstance(barcode, bytes) else str(barcode)
                 return redirect("add_purchase", barcode=barcode)
             else:
-                form.add_error(None, "No barcode detected. Please upload a valid barcode image.")
+                form.add_error(None, "No barcode detected. Please try again.")
 
     return render(request, "purchases/upload_barcode.html", {"form": form})
 

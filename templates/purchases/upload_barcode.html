@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Upload or Capture Barcode Image</h2>
+<h2>Add a Purchase</h2>
 
 <!-- Display Errors -->
 {% if form.errors %}
@@ -19,9 +19,10 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <!-- Toggle Upload vs Capture -->
-    <label><input type="radio" name="image_option" id="upload-option" checked> Upload Image</label>
-    <label><input type="radio" name="image_option" id="capture-option"> Capture Photo</label>
+    <!-- Toggle Between Upload, Capture, or Manual Barcode -->
+    <label><input type="radio" name="input_option" id="upload-option" checked> Upload Image</label>
+    <label><input type="radio" name="input_option" id="capture-option"> Capture Photo</label>
+    <label><input type="radio" name="input_option" id="manual-option"> Enter Barcode Manually</label>
 
     <br><br>
 
@@ -39,8 +40,14 @@
         <input type="hidden" name="captured_image" id="captured_image">  <!-- Stores captured image -->
     </div>
 
+    <!-- Manual Barcode Input Section (Initially Hidden) -->
+    <div id="manual-container" style="display: none;">
+        <label>Enter Barcode:</label>
+        <input type="text" name="manual_barcode" id="manual_barcode" placeholder="Enter barcode number">
+    </div>
+
     <br><br>
-    <button type="submit" id="scan-btn">Scan Barcode</button>
+    <button type="submit" id="scan-btn">Proceed</button>
 </form>
 
 <script>
@@ -52,28 +59,31 @@ document.addEventListener("DOMContentLoaded", function () {
     
     let uploadOption = document.getElementById("upload-option");
     let captureOption = document.getElementById("capture-option");
+    let manualOption = document.getElementById("manual-option");
+
     let uploadContainer = document.getElementById("upload-container");
     let cameraContainer = document.getElementById("camera-container");
+    let manualContainer = document.getElementById("manual-container");
 
     let scanBtn = document.getElementById("scan-btn");
     let stream = null;  // Store the webcam stream
 
-    // Toggle between Upload and Capture options
-    uploadOption.addEventListener("change", function () {
-        if (this.checked) {
-            uploadContainer.style.display = "block";
-            cameraContainer.style.display = "none";
-            stopWebcam();  // Stop the webcam if active
-        }
-    });
+    // Toggle between Upload, Capture, or Manual options
+    function toggleInputs() {
+        uploadContainer.style.display = uploadOption.checked ? "block" : "none";
+        cameraContainer.style.display = captureOption.checked ? "block" : "none";
+        manualContainer.style.display = manualOption.checked ? "block" : "none";
 
-    captureOption.addEventListener("change", function () {
-        if (this.checked) {
-            uploadContainer.style.display = "none";
-            cameraContainer.style.display = "block";
-            startWebcam();  // Start the webcam
+        if (captureOption.checked) {
+            startWebcam();
+        } else {
+            stopWebcam();
         }
-    });
+    }
+
+    uploadOption.addEventListener("change", toggleInputs);
+    captureOption.addEventListener("change", toggleInputs);
+    manualOption.addEventListener("change", toggleInputs);
 
     function startWebcam() {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -102,13 +112,13 @@ document.addEventListener("DOMContentLoaded", function () {
         let imageData = canvas.toDataURL("image/png");  // Convert to base64
         capturedImageField.value = imageData;  // Store in hidden input
 
-        alert("Photo captured! Click 'Scan Barcode' to proceed.");
+        alert("Photo captured! Click 'Proceed' to continue.");
     });
 
     // Ensure at least one option is selected before scanning
     scanBtn.addEventListener("click", function (event) {
-        if (!uploadOption.checked && !captureOption.checked) {
-            alert("Please choose either 'Upload Image' or 'Capture Photo' before scanning.");
+        if (!uploadOption.checked && !captureOption.checked && !manualOption.checked) {
+            alert("Please select one method (Upload, Capture, or Manual Entry).");
             event.preventDefault();  // Prevent form submission
         }
     });

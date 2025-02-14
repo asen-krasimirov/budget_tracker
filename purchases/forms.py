@@ -2,8 +2,9 @@ from django import forms
 from .models import Purchase
 
 class ImageUploadForm(forms.Form):
-    """Form for uploading barcode image"""
-    image = forms.ImageField(required=True, label="Upload Barcode Image")
+    """Form for uploading barcode image OR capturing from webcam."""
+    image = forms.ImageField(required=False, label="Upload Barcode Image")
+    captured_image = forms.CharField(widget=forms.HiddenInput(), required=False)  # Stores base64 image
 
 class PurchaseForm(forms.ModelForm):
     """Form for adding a purchase (barcode, name, category, price)."""

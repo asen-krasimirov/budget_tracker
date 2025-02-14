@@ -1,10 +1,121 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h2>Upload Barcode Image</h2>
+<h2>Upload or Capture Barcode Image</h2>
+
+<!-- Display Errors -->
+{% if form.errors %}
+    <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 10px;">
+        <strong>Error:</strong>
+        <ul>
+            {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<!-- Upload Form -->
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Scan Barcode</button>
+
+    <!-- Toggle Upload vs Capture -->
+    <label><input type="radio" name="image_option" id="upload-option" checked> Upload Image</label>
+    <label><input type="radio" name="image_option" id="capture-option"> Capture Photo</label>
+
+    <br><br>
+
+    <!-- Image Upload Option (Initially Visible) -->
+    <div id="upload-container">
+        <label>Upload Image:</label>
+        {{ form.image }}
+    </div>
+
+    <!-- Webcam Capture Section (Initially Hidden) -->
+    <div id="camera-container" style="display: none;">
+        <video id="video" width="300" height="200" autoplay></video>
+        <button type="button" id="capture-btn">Capture Photo</button>
+        <canvas id="canvas" width="300" height="200" style="display: none;"></canvas>
+        <input type="hidden" name="captured_image" id="captured_image">  <!-- Stores captured image -->
+    </div>
+
+    <br><br>
+    <button type="submit" id="scan-btn">Scan Barcode</button>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let video = document.getElementById("video");
+    let canvas = document.getElementById("canvas");
+    let captureBtn = document.getElementById("capture-btn");
+    let capturedImageField = document.getElementById("captured_image");
+    
+    let uploadOption = document.getElementById("upload-option");
+    let captureOption = document.getElementById("capture-option");
+    let uploadContainer = document.getElementById("upload-container");
+    let cameraContainer = document.getElementById("camera-container");
+
+    let scanBtn = document.getElementById("scan-btn");
+    let stream = null;  // Store the webcam stream
+
+    // Toggle between Upload and Capture options
+    uploadOption.addEventListener("change", function () {
+        if (this.checked) {
+            uploadContainer.style.display = "block";
+            cameraContainer.style.display = "none";
+            stopWebcam();  // Stop the webcam if active
+        }
+    });
+
+    captureOption.addEventListener("change", function () {
+        if (this.checked) {
+            uploadContainer.style.display = "none";
+            cameraContainer.style.display = "block";
+            startWebcam();  // Start the webcam
+        }
+    });
+
+    function startWebcam() {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (mediaStream) {
+                stream = mediaStream;
+                video.srcObject = mediaStream;
+            })
+            .catch(function (err) {
+                console.error("Error accessing webcam:", err);
+                alert("Webcam access denied or unavailable.");
+            });
+    }
+
+    function stopWebcam() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+    }
+
+    // Capture image from video stream
+    captureBtn.addEventListener("click", function () {
+        let context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        let imageData = canvas.toDataURL("image/png");  // Convert to base64
+        capturedImageField.value = imageData;  // Store in hidden input
+
+        alert("Photo captured! Click 'Scan Barcode' to proceed.");
+    });
+
+    // Ensure at least one option is selected before scanning
+    scanBtn.addEventListener("click", function (event) {
+        if (!uploadOption.checked && !captureOption.checked) {
+            alert("Please choose either 'Upload Image' or 'Capture Photo' before scanning.");
+            event.preventDefault();  // Prevent form submission
+        }
+    });
+
+    // Ensure webcam stops when user leaves the page
+    window.addEventListener("beforeunload", stopWebcam);
+});
+</script>
+
 {% endblock %}

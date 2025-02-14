@@ -61,7 +61,7 @@ def signup_view(request):
     return render(request, "accounts/signup.html", {"form": form})
 
 
-def activate(request, uidb64, token):
+def activate_view(request, uidb64, token):
     """Verifies email and activates the user."""
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))

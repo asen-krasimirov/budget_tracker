@@ -1,9 +1,8 @@
-{% extends 'base.html' %}
+{% extends '../base.html' %}
 
 {% block content %}
 <h2>Add a Purchase</h2>
 
-<!-- Display Errors -->
 {% if form.errors %}
     <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 10px;">
         <strong>Error:</strong>
@@ -15,24 +14,20 @@
     </div>
 {% endif %}
 
-<!-- Upload Form -->
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <!-- Toggle Between Upload, Capture, or Manual Barcode -->
     <label><input type="radio" name="input_option" id="upload-option" checked> Upload Image</label>
     <label><input type="radio" name="input_option" id="capture-option"> Capture Photo</label>
     <label><input type="radio" name="input_option" id="manual-option"> Enter Barcode Manually</label>
 
     <br><br>
 
-    <!-- Image Upload Option (Initially Visible) -->
     <div id="upload-container">
         <label>Upload Image:</label>
         {{ form.image }}
     </div>
 
-    <!-- Webcam Capture Section (Initially Hidden) -->
     <div id="camera-container" style="display: none;">
         <video id="video" width="300" height="200" autoplay></video>
         <button type="button" id="capture-btn">Capture Photo</button>
@@ -40,7 +35,6 @@
         <input type="hidden" name="captured_image" id="captured_image">  <!-- Stores captured image -->
     </div>
 
-    <!-- Manual Barcode Input Section (Initially Hidden) -->
     <div id="manual-container" style="display: none;">
         <label>Enter Barcode:</label>
         <input type="text" name="manual_barcode" id="manual_barcode" placeholder="Enter barcode number">

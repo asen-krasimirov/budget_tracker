@@ -12,26 +12,26 @@
 </head>
 <body>
     <div class="container">
-        <h2>Hello {{ user.username }}, here are your latest spending statistics! 📊</h2>
+        <h2>Hello {{ user.username }}, here are your latest spending statistics!</h2>
         <p>All amounts are shown in {{ currency_symbol }}.</p>
 
         {% if monthly_graph %}
-            <h3>📅 Monthly Spending</h3>
+            <h3>Monthly Spending</h3>
             <img src="data:image/png;base64,{{ monthly_graph }}" alt="Monthly Spending Graph">
         {% endif %}
 
         {% if weekly_graph %}
-            <h3>📅 Weekly Spending</h3>
+            <h3>Weekly Spending</h3>
             <img src="data:image/png;base64,{{ weekly_graph }}" alt="Weekly Spending Graph">
         {% endif %}
 
         {% if daily_graph %}
-            <h3>📅 Daily Spending</h3>
+            <h3>Daily Spending</h3>
             <img src="data:image/png;base64,{{ daily_graph }}" alt="Daily Spending Graph">
         {% endif %}
 
         {% if category_graph %}
-            <h3>📊 Spending by Category</h3>
+            <h3>Spending by Category</h3>
             <img src="data:image/png;base64,{{ category_graph }}" alt="Category Spending Graph">
         {% endif %}
 

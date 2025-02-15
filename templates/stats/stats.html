@@ -3,7 +3,6 @@
 {% block content %}
 <h2>Purchase Statistics ({{ USER_CURRENCY }})</h2>
 
-<!-- Filter Options -->
 <div>
     <label for="filter">View Statistics By:</label>
     <select id="filter">
@@ -14,29 +13,25 @@
     </select>
 </div>
 
-<!-- Chart Container -->
 <canvas id="statsChart" width="400" height="200"></canvas>
 
-<!-- Most & Least Bought -->
 <div>
     <h3>Product Trends</h3>
     <p><strong>Most Bought Product:</strong> <span id="mostBought"></span></p>
     <p><strong>Least Bought Product:</strong> <span id="leastBought"></span></p>
 </div>
 
-<!-- ✅ Send Report Button -->
 <div style="margin-top: 20px; text-align: center;">
-    <button id="sendReportButton" class="btn">📧 Send Report via Email</button>
+    <button id="sendReportButton" class="btn">Send Report via Email</button>
     <p id="emailMessage" style="color: green; display: none;">✔ Report Sent Successfully!</p>
 </div>
 
-<!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 {% load static %}
 
 <script>
-    var statsDataUrl = "{% url 'stats_data' %}"; // ✅ Define it globally before external JS loads
+    var statsDataUrl = "{% url 'stats_data' %}";
     var sendReportUrl = "{% url 'send_report' %}";
     var csrfToken = "{{ csrf_token }}";
 </script>

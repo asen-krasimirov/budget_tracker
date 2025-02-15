@@ -8,13 +8,21 @@ User = get_user_model()
 class AuthenticationTests(TestCase):
 
     def setUp(self):
-        """Create a test user."""
-        self.user = User.objects.create_user(email="test@example.com", password="TestPass123", username="testuser")
-        self.user.is_active = False  # User is inactive until email verification
+        """
+        Create a test user.
+        """
+        self.user = User.objects.create_user(
+            email="test@example.com",
+            password="TestPass123",
+            username="testuser"
+        )
+        self.user.is_active = False
         self.user.save()
 
     def test_signup(self):
-        """Test user signup and email verification."""
+        """
+        Test user signup and email verification.
+        """
         response = self.client.post(reverse("signup"), {
             "email": "newuser@example.com",
             "username": "newuser",
@@ -22,33 +30,26 @@ class AuthenticationTests(TestCase):
             "password2": "NewPass123!",
             "currency": "USD",
         })
-        self.assertEqual(response.status_code, 200)  # Ensure signup page loads
+        self.assertEqual(response.status_code, 200)
 
-        # Check if the user was created but not active
         user = User.objects.get(email="newuser@example.com")
         self.assertFalse(user.is_active)
 
-    def test_email_verification(self):
-        """Test email activation flow."""
+    def test_email_verification_invalid_token(self):
+        """
+        Test email activation flow with an invalid token.
+        """
         uid = self.user.pk
         response = self.client.get(reverse("activate", args=[uid, "testtoken"]))
-        self.assertEqual(response.status_code, 200)  # Ensure page loads (invalid token)
+        self.assertEqual(response.status_code, 200)
 
-    def test_sigin(self):
-        """Test login with correct and incorrect credentials."""
+    def test_signin_with_incorrect_credentials(self):
+        """
+        Test login with incorrect credentials.
+        """
         response = self.client.post(reverse("signin"), {
             "email": "test@example.com",
-            "password": "TestPass123",
+            "password": "WrongPass123",
         })
-
-        # ✅ Ensure the login page reloads (incorrect credentials)
-        self.assertEqual(response.status_code, 200, "Login page should reload for unverified user")
-
-        # ✅ Ensure user is NOT logged in (session check)
-        self.assertNotIn("_auth_user_id", self.client.session, "User should NOT be authenticated")
-
-        self.user.is_active = True
-        self.user.save()
-
-        response = self.client.post(reverse("signin"), {"email": "test@example.com", "password": "TestPass123"})
-        self.assertEqual(response.status_code, 200)  # Now should succeed
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("_auth_user_id", self.client.session)

@@ -3,7 +3,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from purchases.models import Purchase
 
+
 User = get_user_model()
+
 
 class PurchaseTests(TestCase):
 
@@ -34,24 +36,17 @@ class PurchaseTests(TestCase):
         # ✅ Check that the new purchase is actually added
         self.assertEqual(Purchase.objects.count(), 2, "A new purchase should be added to the database")
 
+    def test_add_purchase_redirect(self):
+        """
+        Test redirection after adding a new purchase.
+        """
+        response = self.client.post(reverse("add_purchase", args=["987654321"]), {
+            "name": "New Product",
+            "price": 5.50,
+            "category": "Snacks",
+        }, follow=True)
 
-    # def test_edit_purchase(self):
-    #     """Test editing an existing purchase."""
-    #     response = self.client.post(reverse("add_purchase", args=[self.purchase.id]), {
-    #         "name": "Updated Product",
-    #         "price": 15.00,
-    #         "category": "Beverages",
-    #     }, follow=True)  # ✅ Follow redirect to confirm update
-
-    #     # ✅ Ensure redirection happened successfully
-    #     self.assertEqual(response.status_code, 200, "Edit should redirect and load successfully")
-
-    #     # ✅ Refresh from database to get updated values
-    #     self.purchase.refresh_from_db()
-
-    #     # ✅ Ensure name is updated in the database
-    #     self.assertEqual(self.purchase.price, "Updated Product", "Purchase name should be updated")
-
+        self.assertEqual(response.status_code, 200)
 
     def test_delete_purchase(self):
         """Test deleting a purchase."""
@@ -61,4 +56,11 @@ class PurchaseTests(TestCase):
         self.assertEqual(Purchase.objects.filter(id=self.purchase.id).count(), 0)
 
         # ✅ Ensure redirect back to dashboard
+        self.assertRedirects(response, reverse("dashboard"))
+
+    def test_delete_purchase_redirect(self):
+        """
+        Test redirection after deleting a purchase.
+        """
+        response = self.client.post(reverse("delete_purchase", args=[self.purchase.id]), follow=True)
         self.assertRedirects(response, reverse("dashboard"))

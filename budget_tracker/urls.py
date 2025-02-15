@@ -6,11 +6,12 @@ from django.conf.urls.static import static
 
 from .views import home
 
+
 urlpatterns = [
-    path('', home, name="home"),  # Pages App
+    path('', home, name="home"),
     path('admin/', admin.site.urls),
-    path('purchases/', include('purchases.urls')),  # Purchases App
-    path('accounts/', include('accounts.urls')),  # Authentication App
+    path('purchases/', include('purchases.urls')),
+    path('accounts/', include('accounts.urls')),
     path('stats/', include('stats.urls'))
 ]
 

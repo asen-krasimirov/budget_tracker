@@ -13,34 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
-AUTH_USER_MODEL = "accounts.CustomUser"  # ✅ Use the new user model
-
-DEBUG = True
-
-# if DEBUG:
-#     EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
-# else:
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # ✅ Use SMTP
-
-EMAIL_HOST = "smtp.gmail.com"  # ✅ Replace with your mail provider
-EMAIL_PORT = os.getenv("EMAIL_PORT") or 587
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") or True
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") or "personalgrowth57@gmail.com"  # ✅ Your email
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD") or "epqq dtpn cvpx ljap" # ✅ Use app-specific password or .env
-
-print("VARIABLES:    !!!")
-print(EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -49,12 +23,11 @@ print(EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
 SECRET_KEY = 'django-insecure-j*k@j)on)uch+obb)(s4d3&g0*1q58@t&$6i7^pfqg81$a(^te'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -82,8 +55,7 @@ ROOT_URLCONF = 'budget_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': [BASE_DIR / 'templates'],  # Add this line
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # Add this line
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,7 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                 'accounts.context_processors.user_currency',
+                'accounts.context_processors.user_currency',
             ],
         },
     },
@@ -99,10 +71,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'budget_tracker.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -110,10 +80,8 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -129,10 +97,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -141,13 +107,27 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-STATIC_URL = 'static/'
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Custom user model
+AUTH_USER_MODEL = "accounts.CustomUser"
+
+# Email configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = os.getenv("EMAIL_PORT") or 587
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") or True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER") or "personalgrowth57@gmail.com"
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD") or "epqq dtpn cvpx ljap"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

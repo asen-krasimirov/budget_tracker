@@ -4,7 +4,7 @@
 <h2>Add a Purchase</h2>
 
 {% if form.errors %}
-    <div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 10px;">
+    <div class="error-message">
         <strong>Error:</strong>
         <ul>
             {% for error in form.non_field_errors %}
@@ -17,31 +17,40 @@
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <label><input type="radio" name="input_option" id="upload-option" checked> Upload Image</label>
-    <label><input type="radio" name="input_option" id="capture-option"> Capture Photo</label>
-    <label><input type="radio" name="input_option" id="manual-option"> Enter Barcode Manually</label>
+    <!-- ✅ Improved Radio Buttons -->
+    <div class="radio-group">
+        <input type="radio" name="input_option" id="upload-option" value="upload" checked>
+        <label for="upload-option">📁 Upload Image</label>
 
-    <br><br>
+        <input type="radio" name="input_option" id="capture-option" value="capture">
+        <label for="capture-option">📷 Capture Photo</label>
 
+        <input type="radio" name="input_option" id="manual-option" value="manual">
+        <label for="manual-option">🔢 Enter Barcode</label>
+    </div>
+
+    <!-- ✅ Upload Image -->
     <div id="upload-container">
         <label>Upload Image:</label>
         {{ form.image }}
     </div>
 
+    <!-- ✅ Camera Capture Section -->
     <div id="camera-container" style="display: none;">
         <video id="video" width="300" height="200" autoplay></video>
-        <button type="button" id="capture-btn">Capture Photo</button>
+        <button type="button" id="capture-btn" class="btn">Capture Photo</button>
         <canvas id="canvas" width="300" height="200" style="display: none;"></canvas>
-        <input type="hidden" name="captured_image" id="captured_image">  <!-- Stores captured image -->
+        <input type="hidden" name="captured_image" id="captured_image">
     </div>
 
+    <!-- ✅ Manual Barcode Entry -->
     <div id="manual-container" style="display: none;">
         <label>Enter Barcode:</label>
         <input type="text" name="manual_barcode" id="manual_barcode" placeholder="Enter barcode number">
     </div>
 
-    <br><br>
-    <button type="submit" id="scan-btn">Proceed</button>
+    <br>
+    <button type="submit" id="scan-btn" class="btn">Proceed</button>
 </form>
 
 {% load static %}

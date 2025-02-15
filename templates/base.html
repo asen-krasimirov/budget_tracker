@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Budget Tracker{% endblock %}</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .container { max-width: 600px; margin: auto; }
-        nav { margin-bottom: 20px; }
-        nav a { margin-right: 10px; }
-    </style>
+    
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
 </head>
 <body>
 
@@ -19,7 +17,7 @@
             <a href="{% url 'dashboard' %}">Dashboard</a>
             <a href="{% url 'upload_barcode' %}">Add Purchase</a>
             <a href="{% url 'stats' %}">Statistics</a>
-            <a href="{% url 'signout' %}">Logout</a>
+            <a href="{% url 'signout' %}" class="btn btn-danger">Logout</a>
         {% else %}
             <a href="{% url 'signup' %}">Sign Up</a>
             <a href="{% url 'signin' %}">Login</a>

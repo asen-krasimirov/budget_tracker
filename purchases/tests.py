@@ -51,3 +51,14 @@ class PurchaseTests(TestCase):
 
     #     # ✅ Ensure name is updated in the database
     #     self.assertEqual(self.purchase.price, "Updated Product", "Purchase name should be updated")
+
+
+    def test_delete_purchase(self):
+        """Test deleting a purchase."""
+        response = self.client.post(reverse("delete_purchase", args=[self.purchase.id]), follow=True)
+        
+        # ✅ Ensure purchase is deleted
+        self.assertEqual(Purchase.objects.filter(id=self.purchase.id).count(), 0)
+
+        # ✅ Ensure redirect back to dashboard
+        self.assertRedirects(response, reverse("dashboard"))

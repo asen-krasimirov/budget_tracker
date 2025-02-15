@@ -24,6 +24,12 @@
     <p><strong>Least Bought Product:</strong> <span id="leastBought"></span></p>
 </div>
 
+<!-- ✅ Send Report Button -->
+<div style="margin-top: 20px; text-align: center;">
+    <button id="sendReportButton" class="btn">📧 Send Report via Email</button>
+    <p id="emailMessage" style="color: green; display: none;">✔ Report Sent Successfully!</p>
+</div>
+
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -31,11 +37,11 @@
 
 <script>
     var statsDataUrl = "{% url 'stats_data' %}"; // ✅ Define it globally before external JS loads
+    var sendReportUrl = "{% url 'send_report' %}";
+    var csrfToken = "{{ csrf_token }}";
 </script>
 
 <script src="{% static 'scripts/stats_handler.js' %}"></script>
-
-
-
+<script src="{% static 'scripts/email_report_handler.js' %}"></script>
 
 {% endblock %}

@@ -12,6 +12,10 @@ from django.http import HttpResponse
 
 import csv
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+
 @login_required
 def upload_barcode(request):
     """Handles barcode image upload, webcam capture, or manual entry."""
@@ -79,6 +83,14 @@ def add_purchase(request, barcode):
         form = PurchaseForm(initial=initial_data)
 
     return render(request, 'purchases/add_purchase.html', {'form': form, 'barcode': barcode})
+
+@login_required
+def delete_purchase(request, purchase_id):
+    """Deletes a purchase and redirects back to the dashboard."""
+    purchase = get_object_or_404(Purchase, id=purchase_id, user=request.user)
+    purchase.delete()
+    messages.success(request, "Purchase deleted successfully!")
+    return redirect("dashboard")
 
 @login_required
 def dashboard(request):

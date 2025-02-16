@@ -86,6 +86,7 @@ def signin_view(request):
 
     return render(request, 'accounts/signin.html', {'form': form})
 
+
 @login_required
 def signout_view(request):
     """

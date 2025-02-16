@@ -2,16 +2,6 @@ from django.db import models
 # from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 
-CURRENCY_CHOICES = [
-    ("USD", "US Dollar ($)"),
-    ("EUR", "Euro (€)"),
-    ("GBP", "British Pound (£)"),
-    ("INR", "Indian Rupee (₹)"),
-    ("JPY", "Japanese Yen (¥)"),
-    ("AUD", "Australian Dollar (A$)"),
-    ("BGN", "Bulgarian Lev (BGN)"),
-]
-
 
 class CustomUser(AbstractUser):
     """Custom user model using email for authentication."""

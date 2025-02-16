@@ -1,10 +1,10 @@
 from django import forms
-from django.contrib.auth.models import User
-from .models import UserProfile, CURRENCY_CHOICES
+from .models import UserProfile
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, UserProfile
+
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)

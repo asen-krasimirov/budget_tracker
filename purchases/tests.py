@@ -10,10 +10,12 @@ User = get_user_model()
 class PurchaseTests(TestCase):
 
     def setUp(self):
-        """Create a test user and a sample purchase."""
+        """
+        Create a test user and a sample purchase.
+        """
         self.user = User.objects.create_user(
             email="user@example.com", 
-            username="testuser",  # ✅ Added missing username
+            username="testuser",
             password="TestPass123"
         )
         self.client.login(email="user@example.com", password="TestPass123")
@@ -23,18 +25,17 @@ class PurchaseTests(TestCase):
         )
 
     def test_add_purchase(self):
-        """Test adding a new purchase."""
+        """
+        Test adding a new purchase.
+        """
         response = self.client.post(reverse("add_purchase", args=["987654321"]), {
             "name": "New Product",
             "price": 5.50,
             "category": "Snacks",
-        }, follow=True)  # ✅ Follow the redirect
+        }, follow=True)
 
-        # ✅ Ensure we end up on the correct page after redirection
-        self.assertEqual(response.status_code, 200, "The page after redirection should return 200 OK")
-
-        # ✅ Check that the new purchase is actually added
-        self.assertEqual(Purchase.objects.count(), 2, "A new purchase should be added to the database")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Purchase.objects.count(), 2)
 
     def test_add_purchase_redirect(self):
         """
@@ -49,13 +50,11 @@ class PurchaseTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_delete_purchase(self):
-        """Test deleting a purchase."""
+        """
+        Test deleting a purchase.
+        """
         response = self.client.post(reverse("delete_purchase", args=[self.purchase.id]), follow=True)
-        
-        # ✅ Ensure purchase is deleted
         self.assertEqual(Purchase.objects.filter(id=self.purchase.id).count(), 0)
-
-        # ✅ Ensure redirect back to dashboard
         self.assertRedirects(response, reverse("dashboard"))
 
     def test_delete_purchase_redirect(self):

@@ -1,12 +1,14 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from accounts.models import UserProfile
+
 
 User = get_user_model()
 
+
 class AuthenticationTests(TestCase):
 
+    @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
     def setUp(self):
         """
         Create a test user.
